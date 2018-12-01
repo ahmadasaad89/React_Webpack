@@ -26,6 +26,8 @@ module.exports =(env, argv) => {
         ? [...commonPlugins, ...devPlugins]
         : [...commonPlugins, ...prodPlugins];
 
+    const stats = { children: false, maxModules: 0 }
+
     /* Webpack config */
     return ({
         entry: "./src/index.js",
@@ -35,6 +37,7 @@ module.exports =(env, argv) => {
         },
         mode: argv.mode,
         devServer: {
+            stats,
             hot: true,
             port: 3001
         },
@@ -53,5 +56,4 @@ module.exports =(env, argv) => {
         },
         plugins
     })
-}
-    ;
+};
