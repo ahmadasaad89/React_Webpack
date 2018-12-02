@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-
-import Details from '../Details';
+import Tabs from '../Tabs';
 
 const Overview = props => (
     <div className="container">
@@ -11,8 +10,10 @@ const Overview = props => (
             </div>
             <div className="col-12 col-md-9">
                 { props.data.bio }
-                <Details />
             </div>
+        </div>
+        <div className="row">
+            <Tabs />
         </div>
     </div>
 );

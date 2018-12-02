@@ -42,28 +42,34 @@ class App extends Component {
 
     render() {
         const { inputValue, data } = this.state;
+
+        const view = data ? (
+            <Overview data={data} />
+        ) : (
+            <div className="jumbotron">
+                <h1 className="display-4">Hello, world!</h1>
+                <p className="lead">
+                    Use this page to search for Github Users!
+                </p>
+            </div>
+        );
+
         return ([
             <NavBar key="navBar" />,
             <div key="content" className="container">
                 <ErrorBoundary>
-                    <form>
-                        <div className="row mt-5">
-                            <div className="col-9">
-                                {
-                                    data && (
-                                        <Overview data={data} />
-                                    )
-                                }
-                            </div>
-                            <div className="col-3">
-                                <Search
-                                    onChange={this.handleInputChange}
-                                    onSubmit={this.handleSearch}
-                                    value={inputValue}
-                                />
-                            </div>
+                    <div className="row mt-5">
+                        <div className="col-9">
+                            { view }
                         </div>
-                    </form>
+                        <div className="col-3">
+                            <Search
+                                onChange={this.handleInputChange}
+                                onSubmit={this.handleSearch}
+                                value={inputValue}
+                            />
+                        </div>
+                    </div>
                 </ErrorBoundary>
             </div>,
         ]);
