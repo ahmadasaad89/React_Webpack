@@ -11,6 +11,7 @@ class Overview extends Component {
         this.state = {
             data: null,
         };
+
         this.fetchUser = this.fetchUser.bind(this);
     }
 
@@ -46,6 +47,8 @@ class Overview extends Component {
             bio,
         } = !!data && data;
 
+        const { username } = this.props.match.params;
+
         return (
             <div className="container">
                 <div className="row">
@@ -57,7 +60,7 @@ class Overview extends Component {
                     </div>
                 </div>
                 <div className="row">
-                    <Tabs />
+                    <Tabs username={username} />
                 </div>
             </div>
         );
