@@ -39,7 +39,7 @@ class App extends Component {
         event.preventDefault();
         const { inputValue } = this.state;
 
-        this.props.history.push(`/user/${inputValue}`);
+        this.props.history.push(`/users/${inputValue}`);
     }
 
     render() {
@@ -57,7 +57,7 @@ class App extends Component {
                                 component={IntroPage}
                             />
                             <Route
-                                path="/user/:username"
+                                path="/users/:username"
                                 component={Overview}
                             />
                         </div>

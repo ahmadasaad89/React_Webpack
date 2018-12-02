@@ -10,21 +10,34 @@ const Tabs = props => (
         <div className="row">
             <div className="col-12 col-md-3" />
             <div className="col-12 col-md-9">
-                <ul className="nav nav-tabs">
-                    <li className="nav-item">
-                        <Link className="nav-link active" to={`/user/${props.username}/repositories`}>Repositories</Link>
-                    </li>
-                    <li className="nav-item">
-                        <Link className="nav-link" to={`/user/${props.username}/Followers`}>Followers</Link>
-                    </li>
-                    <li className="nav-item">
-                        <Link className="nav-link" to={`/user/${props.username}/Following`}>Following</Link>
-                    </li>
-                </ul>
+                <table className="table">
+                    <tbody>
+                        <tr>
+                            <td>
+                                <Link className="btn text-center" to={`/users/${props.username}/repositories`}>
+                                    <h6>{ props.data.public_repos }</h6>
+                                    <p>Repositories</p>
+                                </Link>
+                            </td>
+                            <td>
+                                <Link className="btn text-center" to={`/users/${props.username}/followers`}>
+                                    <h6>{ props.data.followers }</h6>
+                                    <p>Followers</p>
+                                </Link>
+                            </td>
+                            <td>
+                                <Link className="btn text-center" to={`/users/${props.username}/following`}>
+                                    <h6>{ props.data.following }</h6>
+                                    <p>Following</p>
+                                </Link>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
                 <Switch>
-                    <Route path="/user/:username/Followers" component={FollowList} />
-                    <Route path="/user/:username/Following" component={FollowList} />
-                    <Route path="/user/:username" render={() => (<Repositories username={props.username} />)} />
+                    <Route path="/users/:username/followers" component={FollowList} />
+                    <Route path="/users/:username/following" component={FollowList} />
+                    <Route path="/users/:username" render={() => (<Repositories username={props.username} />)} />
                 </Switch>
             </div>
         </div>
@@ -33,6 +46,7 @@ const Tabs = props => (
 
 Tabs.propTypes = {
     username: PropTypes.string,
+    data: PropTypes.object,
 };
 
 export default Tabs;

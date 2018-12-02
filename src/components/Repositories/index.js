@@ -39,16 +39,26 @@ class Repositories extends Component {
     render() {
         const { data } = this.state;
         const repos = data && data.map(repo => (
-            <div key={repo.id}>
+            <a
+                key={repo.id}
+                href={repo.html_url}
+                className="list-group-item d-flex justify-content-between align-items-center"
+            >
                 { repo.name }
-            </div>
+                <span className="badge badge-primary badge-pill">
+                    { repo.stargazers_count }
+                    ★
+                </span>
+            </a>
         ));
 
         return (
-            <div className="container">
+            <div className="container mt-3">
                 <div className="row">
                     <div className="col-12">
-                        { repos }
+                        <div className="list-group list-group-flush">
+                            { repos }
+                        </div>
                     </div>
                 </div>
             </div>

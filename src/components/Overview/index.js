@@ -51,17 +51,21 @@ class Overview extends Component {
 
         return (
             <div className="container">
-                <div className="row">
-                    <div className="col-12 col-md-3">
-                        <img src={avatarUrl} alt={login} className="img-thumbnail" />
-                    </div>
-                    <div className="col-12 col-md-9">
-                        { bio }
-                    </div>
-                </div>
-                <div className="row">
-                    <Tabs username={username} />
-                </div>
+                {
+                    data && ([
+                        <div key="basicInfo" className="row">
+                            <div className="col-12 col-md-3">
+                                <img src={avatarUrl} alt={login} className="img-thumbnail" />
+                            </div>
+                            <div className="col-12 col-md-9">
+                                { bio }
+                            </div>
+                        </div>,
+                        <div key="additionalInfo" className="row">
+                            <Tabs username={username} data={data} />
+                        </div>,
+                    ])
+                }
             </div>
         );
     }
