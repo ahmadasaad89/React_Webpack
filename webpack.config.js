@@ -1,5 +1,7 @@
 const path = require("path");
 const webpack = require("webpack");
+const CleanWebpackPlugin = require('clean-webpack-plugin');
+
 
 /* plugins */
 const HtmlWebpackPlugin = require("html-webpack-plugin");
@@ -10,6 +12,7 @@ module.exports =(env, argv) => {
 
     /* Plugins */
     const devPlugins = [
+        new CleanWebpackPlugin(['dist']),
         new webpack.HotModuleReplacementPlugin(),
         new WriteFilePlugin(),
         new HtmlWebpackPlugin({
@@ -34,9 +37,11 @@ module.exports =(env, argv) => {
         output: {
             path: path.resolve(__dirname, "dist"),
             filename: "index_bundle.js",
+            publicPath: '/',
         },
         mode: argv.mode,
         devServer: {
+            historyApiFallback: true,
             stats,
             hot: true,
             port: 3001
