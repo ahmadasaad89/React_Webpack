@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+
 import { hot } from 'react-hot-loader';
-import axios from 'axios';
+import { Route } from 'react-router-dom';
+
 
 import ErrorBoundary from './ErrorBoundary';
 import NavBar from './NavBar';
@@ -9,12 +12,20 @@ import Overview from './Overview';
 
 import '../styles/App.scss';
 
+const IntroPage = () => (
+    <div className="jumbotron">
+        <h1 className="display-4">Hello, world!</h1>
+        <p className="lead">
+            Use this page to search for Github Users!
+        </p>
+    </div>
+);
+
 class App extends Component {
     constructor(props) {
         super(props);
         this.state = {
             inputValue: '',
-            data: null,
         };
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleSearch = this.handleSearch.bind(this);
@@ -26,41 +37,29 @@ class App extends Component {
 
     handleSearch(event) {
         event.preventDefault();
-
         const { inputValue } = this.state;
-        const apiEndPoint = `https://api.github.com/users/${inputValue}`;
 
-        axios(apiEndPoint, {
-            method: 'GET',
-            headers: {
-                Accept: 'application/vnd.github.v3+json',
-            },
-        }).then((response) => {
-            this.setState({ data: response.data });
-        });
+        this.props.history.push(`/user/${inputValue}`);
     }
 
     render() {
-        const { inputValue, data } = this.state;
-
-        const view = data ? (
-            <Overview data={data} />
-        ) : (
-            <div className="jumbotron">
-                <h1 className="display-4">Hello, world!</h1>
-                <p className="lead">
-                    Use this page to search for Github Users!
-                </p>
-            </div>
-        );
+        const { inputValue } = this.state;
 
         return ([
-            <NavBar key="navBar" />,
-            <div key="content" className="container">
+            <NavBar key="NavBar" />,
+            <div key="Content" className="container">
                 <ErrorBoundary>
                     <div className="row mt-5">
                         <div className="col-9">
-                            { view }
+                            <Route
+                                exact
+                                path="/"
+                                component={IntroPage}
+                            />
+                            <Route
+                                path="/user/:username"
+                                component={Overview}
+                            />
                         </div>
                         <div className="col-3">
                             <Search
@@ -75,5 +74,9 @@ class App extends Component {
         ]);
     }
 }
+
+App.propTypes = {
+    history: PropTypes.object,
+};
 
 export default hot(module)(App);
