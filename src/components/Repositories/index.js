@@ -1,75 +1,75 @@
-import React, { Component } from 'react';
-import axios from 'axios';
+import React from 'react';
 import PropTypes from 'prop-types';
+import gql from 'graphql-tag';
+import { Query } from 'react-apollo';
 
-class Repositories extends Component {
-    constructor(props) {
-        super(props);
+const Repositories = (props) => {
+    const { username } = props;
 
-        this.state = {
-            data: null,
-            isLoading: false,
-        };
-        this.fetchRepos = this.fetchRepos.bind(this);
-    }
-
-    componentDidMount() {
-        this.fetchRepos();
-    }
-
-    componentDidUpdate(prevProps) {
-        if (this.props.username !== prevProps.username) {
-            this.fetchRepos();
+    const GET_REPOS = gql`
+      query repos {
+        user(login:${username}) {
+          repositories(first: 15) {
+            edges {
+              node {
+                url,
+                name,
+                id,
+                forkCount,
+                stargazers(last:2) {
+                  totalCount
+                }
+              }
+            }
+          }
         }
-    }
+      }
+    `;
 
-    fetchRepos() {
-        const { username } = this.props;
-        const apiEndPoint = `https://api.github.com/users/${username}/repos`;
+    const repos = (
+        <Query query={GET_REPOS}>
+            {({ data: { user } }) => {
+                const { edges } = !!user && user.repositories;
+                return (
+                    <div>
+                        { !edges && 'Loading...' }
+                        { edges && edges.map(repo => (
+                            <a
+                                key={repo.node.id}
+                                href={repo.node.url}
+                                className="list-group-item d-flex justify-content-between align-items-center"
+                            >
+                                { repo.node.name }
+                                <span className="badge badge-primary badge-pill">
+                                    { repo.node.stargazers.totalCount }
+                                    &nbsp; ★
+                                </span>
+                            </a>))
+                        }
+                    </div>
 
-        this.setState({ isLoading: true });
-        axios(apiEndPoint, {
-            method: 'GET',
-            headers: {
-                Accept: 'application/vnd.github.v3+json',
-            },
-        }).then((response) => {
-            this.setState({ data: response.data, isLoading: false });
-        });
-    }
+                );
+            }}
+        </Query>
+    );
 
-    render() {
-        const { data, isLoading } = this.state;
-        const repos = data && data.map(repo => (
-            <a
-                key={repo.id}
-                href={repo.html_url}
-                className="list-group-item d-flex justify-content-between align-items-center"
-            >
-                { repo.name }
-                <span className="badge badge-primary badge-pill">
-                    { repo.stargazers_count }
-                    ★
-                </span>
-            </a>
-        ));
-
-        return (
-            <div className="container mt-3">
-                <div className="row">
-                    <div className="col-12">
-                        { isLoading && 'Loading...' }
-                        { !isLoading && (
-                            <div className="list-group list-group-flush">
-                                { repos || 'Loading...' }
-                            </div>
-                        )}
+    return (
+        <div className="container mt-3">
+            <div className="row">
+                <div className="col-12">
+                    <div className="list-group list-group-flush">
+                        <p className="ml-3">
+                            <mark>
+                                The repositories list is fetched using github QraphQL api (v4)
+                            </mark>
+                        </p>
+                        { repos }
                     </div>
                 </div>
             </div>
-        );
-    }
-}
+        </div>
+    );
+};
 
 Repositories.propTypes = {
     username: PropTypes.string,

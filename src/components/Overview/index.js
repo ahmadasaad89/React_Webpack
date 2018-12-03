@@ -43,8 +43,9 @@ class Overview extends Component {
         const { data } = this.state;
         const {
             avatar_url: avatarUrl,
-            login,
             bio,
+            login,
+            name,
         } = !!data && data;
 
         const { username } = this.props.match.params;
@@ -58,6 +59,13 @@ class Overview extends Component {
                                 <img src={avatarUrl} alt={login} className="img-thumbnail" />
                             </div>
                             <div className="col-12 col-md-9">
+                                <h3>
+                                    { login }
+                                    <small className="text-muted">
+                                        &nbsp;
+                                        { name }
+                                    </small>
+                                </h3>
                                 { bio }
                             </div>
                         </div>,
