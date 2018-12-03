@@ -8,6 +8,7 @@ class Repositories extends Component {
 
         this.state = {
             data: null,
+            isLoading: false,
         };
         this.fetchRepos = this.fetchRepos.bind(this);
     }
@@ -26,18 +27,19 @@ class Repositories extends Component {
         const { username } = this.props;
         const apiEndPoint = `https://api.github.com/users/${username}/repos`;
 
+        this.setState({ isLoading: true });
         axios(apiEndPoint, {
             method: 'GET',
             headers: {
                 Accept: 'application/vnd.github.v3+json',
             },
         }).then((response) => {
-            this.setState({ data: response.data });
+            this.setState({ data: response.data, isLoading: false });
         });
     }
 
     render() {
-        const { data } = this.state;
+        const { data, isLoading } = this.state;
         const repos = data && data.map(repo => (
             <a
                 key={repo.id}
@@ -56,9 +58,12 @@ class Repositories extends Component {
             <div className="container mt-3">
                 <div className="row">
                     <div className="col-12">
-                        <div className="list-group list-group-flush">
-                            { repos }
-                        </div>
+                        { isLoading && 'Loading...' }
+                        { !isLoading && (
+                            <div className="list-group list-group-flush">
+                                { repos || 'Loading...' }
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>

@@ -8,6 +8,7 @@ class FollowList extends Component {
 
         this.state = {
             data: null,
+            isLoading: false,
         };
         this.fetchFollowList = this.fetchFollowList.bind(this);
     }
@@ -26,31 +27,34 @@ class FollowList extends Component {
         const { url } = this.props.match;
         const apiEndPoint = `https://api.github.com${url}`;
 
+        this.setState({ isLoading: true });
         axios(apiEndPoint, {
             method: 'GET',
             headers: {
                 Accept: 'application/vnd.github.v3+json',
             },
         }).then((response) => {
-            this.setState({ data: response.data });
+            this.setState({ data: response.data, isLoading: false });
         });
     }
 
     render() {
-        const { data } = this.state;
+        const { data, isLoading } = this.state;
         const followList = data && data.map(listItem => (
-            <div key={listItem.id}>
-                { listItem.login }
+            <div key={listItem.id} className="row mb-2">
+                <div className="col-2">
+                    <img src={listItem.avatar_url} alt={listItem.login} className="img-thumbnail rounded-circle" />
+                </div>
+                <div className="col-auto">
+                    <a href={listItem.url} className="btn text-dark">{ listItem.login }</a>
+                </div>
             </div>
         ));
 
         return (
             <div className="container">
-                <div className="row">
-                    <div className="col-12">
-                        { followList }
-                    </div>
-                </div>
+                { isLoading && 'Loading...' }
+                { !isLoading && followList }
             </div>
         );
     }
