@@ -53,6 +53,11 @@ class FollowList extends Component {
 
         return (
             <div className="container">
+                <p className="mb-4">
+                    <mark>
+                        The followers/following lists are fetched using github REST api (v3)
+                    </mark>
+                </p>
                 { isLoading && 'Loading...' }
                 { !isLoading && followList }
             </div>
