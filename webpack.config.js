@@ -15,12 +15,12 @@ module.exports =(env, argv) => {
         new CleanWebpackPlugin(['dist']),
         new webpack.HotModuleReplacementPlugin(),
         new WriteFilePlugin(),
-        new HtmlWebpackPlugin({
-            template: "./src/index.html"
-        })
     ];
 
     const commonPlugins = [
+        new HtmlWebpackPlugin({
+            template: "./src/index.html"
+        })
     ];
 
     const prodPlugins = [];
