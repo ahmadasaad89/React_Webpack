@@ -19,7 +19,7 @@ module.exports =(env, argv) => {
 
     const commonPlugins = [
         new HtmlWebpackPlugin({
-            template: "./src/index.html"
+            template: "index.html"
         })
     ];
 
