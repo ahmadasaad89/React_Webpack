@@ -10,6 +10,7 @@ class Overview extends Component {
 
         this.state = {
             data: null,
+            error: null,
         };
 
         this.fetchUser = this.fetchUser.bind(this);
@@ -29,6 +30,8 @@ class Overview extends Component {
         const { username } = this.props.match.params;
         const apiEndPoint = `https://api.github.com/users/${username}`;
 
+        this.setState({ data: null, error: false });
+
         axios(apiEndPoint, {
             method: 'GET',
             headers: {
@@ -36,11 +39,11 @@ class Overview extends Component {
             },
         }).then((response) => {
             this.setState({ data: response.data });
-        });
+        }).catch(() => this.setState({ error: true }));
     }
 
     render() {
-        const { data } = this.state;
+        const { data, error } = this.state;
         const {
             avatar_url: avatarUrl,
             bio,
@@ -52,6 +55,7 @@ class Overview extends Component {
 
         return (
             <div className="container">
+                { error && 'Sorry, there is no user with this name' }
                 {
                     data && ([
                         <div key="basicInfo" className="row">
