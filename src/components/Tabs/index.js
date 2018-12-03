@@ -1,9 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Switch, Route, Link } from 'react-router-dom';
+import Loadable from 'react-loadable';
 
-import Repositories from '../Repositories';
-import FollowList from '../FollowList';
+const Repositories = Loadable({
+    loader: () => import('../Repositories'),
+    loading: () => 'LoOoOoading...',
+});
+
+const FollowList = Loadable({
+    loader: () => import('../FollowList'),
+    loading: () => 'LoOoOoading...',
+});
 
 const Tabs = props => (
     <div className="container">
