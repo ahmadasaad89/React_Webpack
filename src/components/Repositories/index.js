@@ -28,11 +28,15 @@ const Repositories = (props) => {
 
     const repos = (
         <Query query={GET_REPOS}>
-            {({ data: { user } }) => {
+            {({ loading, error, data }) => {
+                const { user } = !!data && data;
                 const { edges } = !!user && user.repositories;
+
+                if (loading) return 'Loading...';
+                if (error) return null;
+
                 return (
                     <div>
-                        { !edges && 'Loading...' }
                         { edges && edges.map(repo => (
                             <a
                                 key={repo.node.id}
