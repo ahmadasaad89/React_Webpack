@@ -56,28 +56,26 @@ class Overview extends Component {
         return (
             <div className="container">
                 { error && 'Sorry, there is no user with this name' }
-                {
-                    data && ([
-                        <div key="basicInfo" className="row">
-                            <div className="col-12 col-md-3">
-                                <img src={avatarUrl} alt={login} className="img-thumbnail" />
-                            </div>
-                            <div className="col-12 col-md-9">
-                                <h3>
-                                    { login }
-                                    <small className="text-muted">
-                                        &nbsp;
-                                        { name }
-                                    </small>
-                                </h3>
-                                { bio }
-                            </div>
-                        </div>,
-                        <div key="additionalInfo" className="row">
-                            <Tabs username={username} data={data} />
-                        </div>,
-                    ])
-                }
+                { data && ([
+                    <div key="basicInfo" className="row">
+                        <div className="col-12 col-md-3">
+                            <img src={avatarUrl} alt={login} className="img-thumbnail" />
+                        </div>
+                        <div className="col-12 col-md-9">
+                            <h3>
+                                { login }
+                                <small className="text-muted">
+                                    &nbsp;
+                                    { name }
+                                </small>
+                            </h3>
+                            { bio }
+                        </div>
+                    </div>,
+                    <div key="additionalInfo" className="row">
+                        <Tabs username={username} data={data} />
+                    </div>,
+                ]) }
             </div>
         );
     }
