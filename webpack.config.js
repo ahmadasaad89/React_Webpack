@@ -46,6 +46,9 @@ module.exports =(env, argv) => {
             hot: true,
             port: 3001
         },
+        devtool: isDevelopment
+            ? '#eval-source-map'
+            : 'source-map',
         module: {
             rules: [
                 {

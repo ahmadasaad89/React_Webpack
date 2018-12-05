@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Switch, Route, Link } from 'react-router-dom';
 import Loadable from 'react-loadable';
 
+// Fetch the code for repos and the following/followers list only when needed
 const Repositories = Loadable({
     loader: () => import('../Repositories'),
     loading: () => 'LoOoOoading...',
