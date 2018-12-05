@@ -18,12 +18,11 @@ class FollowList extends Component {
             url: this.props.match.url,
         };
 
-        this.fetchFollowList = this.fetchFollowList.bind(this);
         this.fetchMoreResults = this.fetchMoreResults.bind(this);
     }
 
     componentDidMount() {
-        this.fetchFollowList();
+        this.fetchMoreResults();
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -52,6 +51,8 @@ class FollowList extends Component {
             },
         } = this.state;
 
+        if (nextPage === 1) this.setState({ isLoading: true });
+
         const githubUrl = `https://api.github.com${url}?per_page=50&page=${nextPage}`;
 
         axios(githubUrl, {
@@ -73,39 +74,10 @@ class FollowList extends Component {
             this.setState({
                 data: moreData,
                 hasMoreItems,
-                paginationInfo: {
-                    nextPage: next && next.page,
-                },
-            });
-        }).catch(() => this.setState({ error: true }));
-    }
-
-    fetchFollowList() {
-        const { url } = this.state;
-        const apiEndPoint = `https://api.github.com${url}?per_page=50`;
-
-        this.setState({ isLoading: true });
-
-        axios(apiEndPoint, {
-            method: 'GET',
-            headers: {
-                Accept: 'application/vnd.github.v3+json',
-                authorization: 'Bearer e9732110533aa8f2b77499cae6fb5d1dadc94607',
-            },
-        }).then((response) => {
-            const {
-                next,
-            } = !!response.headers.link && parse(response.headers.link);
-            // Stop fetching more items if there is no next attribute in the link header
-            const hasMoreItems = !!next;
-
-            this.setState({
-                data: response.data,
                 isLoading: false,
                 paginationInfo: {
                     nextPage: next && next.page,
                 },
-                hasMoreItems,
             });
         }).catch(() => this.setState({ error: true }));
     }
