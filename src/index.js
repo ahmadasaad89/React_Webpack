@@ -8,7 +8,7 @@ import { InMemoryCache } from 'apollo-cache-inmemory';
 
 import App from './components/App';
 
-
+// configuring Apollo client
 const httpLink = new HttpLink({
     uri: 'https://api.github.com/graphql',
     headers: {

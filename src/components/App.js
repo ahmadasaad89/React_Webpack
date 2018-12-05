@@ -4,19 +4,17 @@ import PropTypes from 'prop-types';
 import { hot } from 'react-hot-loader';
 import { Route } from 'react-router-dom';
 
-
+/* Components */
 import ErrorBoundary from './ErrorBoundary';
 import NavBar from './NavBar';
 import Search from './Search';
 import Overview from './Overview';
 
-import '../styles/App.scss';
-
 const IntroPage = () => (
     <div className="jumbotron">
         <h1 className="display-4">Hello, world!</h1>
         <p className="lead">
-            Use this page to search for Github Users!
+            Use this page to search for Github Users by login name!
         </p>
     </div>
 );

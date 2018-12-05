@@ -11,7 +11,7 @@ const Search = props => (
                 onChange={props.onChange}
                 type="text"
                 value={props.inputValue}
-                placeholder="search"
+                placeholder="search by login name"
             />
         </div>
         <button

@@ -11,13 +11,13 @@ class FollowList extends Component {
         this.state = {
             data: [],
             isLoading: false,
+            hasMoreItems: true,
             paginationInfo: {
                 nextPage: 1,
-                lastPage: 2,
             },
-            hasMoreItems: true,
             url: this.props.match.url,
         };
+
         this.fetchFollowList = this.fetchFollowList.bind(this);
         this.fetchMoreResults = this.fetchMoreResults.bind(this);
     }
@@ -26,22 +26,17 @@ class FollowList extends Component {
         this.fetchFollowList();
     }
 
-    componentDidUpdate(prevProps) {
-        if (this.props.match.url !== prevProps.match.url) {
-            this.fetchFollowList();
-        }
-    }
-
     static getDerivedStateFromProps(nextProps, prevState) {
+        // Reset the state when switching between followers/following lists
         if (nextProps.match.url !== prevState.url) {
             return {
                 data: [],
                 hasMoreItems: true,
                 paginationInfo: {
                     nextPage: 1,
-                    lastPage: 2,
                 },
                 url: nextProps.match.url,
+                error: false,
             };
         }
 
@@ -49,7 +44,7 @@ class FollowList extends Component {
     }
 
     fetchMoreResults() {
-        const { url: pathname } = this.state;
+        const { url } = this.state;
         const {
             data,
             paginationInfo: {
@@ -57,9 +52,41 @@ class FollowList extends Component {
             },
         } = this.state;
 
-        const githubUrl = `https://api.github.com${pathname}?per_page=50&page=${nextPage}`;
+        const githubUrl = `https://api.github.com${url}?per_page=50&page=${nextPage}`;
 
         axios(githubUrl, {
+            method: 'GET',
+            headers: {
+                Accept: 'application/vnd.github.v3+json',
+                authorization: 'Bearer e9732110533aa8f2b77499cae6fb5d1dadc94607', // This should be moved to the environment variables
+            },
+        }).then((response) => {
+            const {
+                next,
+            } = !!response.headers.link && parse(response.headers.link);
+
+            // Add the next page data to the list
+            const moreData = [...data, ...response.data];
+            // Stop fetching more items if there is no next attribute in the link header
+            const hasMoreItems = !!next;
+
+            this.setState({
+                data: moreData,
+                hasMoreItems,
+                paginationInfo: {
+                    nextPage: next && next.page,
+                },
+            });
+        }).catch(() => this.setState({ error: true }));
+    }
+
+    fetchFollowList() {
+        const { url } = this.state;
+        const apiEndPoint = `https://api.github.com${url}?per_page=50`;
+
+        this.setState({ isLoading: true });
+
+        axios(apiEndPoint, {
             method: 'GET',
             headers: {
                 Accept: 'application/vnd.github.v3+json',
@@ -68,47 +95,19 @@ class FollowList extends Component {
         }).then((response) => {
             const {
                 next,
-                last,
             } = !!response.headers.link && parse(response.headers.link);
-            const moreData = [...data, ...response.data];
+            // Stop fetching more items if there is no next attribute in the link header
             const hasMoreItems = !!next;
-
-            this.setState({
-                data: moreData,
-                hasMoreItems,
-                paginationInfo: {
-                    nextPage: next && next.page,
-                    lastPage: last && last.page,
-                },
-            });
-        });
-    }
-
-    fetchFollowList() {
-        const { url } = this.props.match;
-        const apiEndPoint = `https://api.github.com${url}?per_page=50`;
-
-        this.setState({ isLoading: true });
-        axios(apiEndPoint, {
-            method: 'GET',
-            headers: {
-                Accept: 'application/vnd.github.v3+json',
-                authorization: 'Bearer e9732110533aa8f2b77499cae6fb5d1dadc94607',
-            },
-        }).then((response) => {
-            const pagination = parse(response.headers.link);
-            const hasMoreItems = pagination && !!pagination.next;
 
             this.setState({
                 data: response.data,
                 isLoading: false,
                 paginationInfo: {
-                    nextPage: pagination && pagination.next && pagination.next.page,
-                    lastPage: pagination && pagination.last && pagination.last.page,
+                    nextPage: next && next.page,
                 },
                 hasMoreItems,
             });
-        });
+        }).catch(() => this.setState({ error: true }));
     }
 
     render() {
@@ -116,7 +115,10 @@ class FollowList extends Component {
             data,
             isLoading,
             hasMoreItems,
+            error,
         } = this.state;
+
+        if (error) return null;
 
         const followList = data && data.map(listItem => (
             <div key={listItem.id} className="row mb-2">
@@ -134,7 +136,7 @@ class FollowList extends Component {
                 pageStart={0}
                 loadMore={this.fetchMoreResults}
                 hasMore={hasMoreItems}
-                loader={<div className="loader" key={0}>Loading ...</div>}
+                loader={<div className="loader" key={0}>Loading...</div>}
             >
                 { followList }
             </InfiniteScroll>
